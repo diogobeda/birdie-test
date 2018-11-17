@@ -1,0 +1,19 @@
+version: '3'
+services:
+  server:
+    build:
+      context: server
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./server:/home/server
+    ports:
+      - 9229:9229
+    command: yarn start-dev
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST:
+      DB_USER:
+      DB_PASS:
+      DB_PORT:
+      DB_NAME:

@@ -1,0 +1,30 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "concurrently  -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "watch-ts": "tsc -w",
+    "watch-node": "nodemon dist",
+    "test": "jest"
+  },
+  "author": "Diogo Beda <diogo.fbeda@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^23.3.9",
+    "@types/knex": "^0.15.1",
+    "@types/mock-knex": "^0.3.4",
+    "concurrently": "^4.0.1",
+    "jest": "^23.6.0",
+    "mock-knex": "^0.4.2",
+    "nodemon": "^1.18.6",
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "knex": "^0.15.2",
+    "mysql": "^2.16.0"
+  }
+}
