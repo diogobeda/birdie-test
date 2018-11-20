@@ -7,13 +7,13 @@ services:
     volumes:
       - ./server:/home/server
     ports:
-      - 9229:9229
+      - 3000:3000
     command: yarn start-dev
     environment:
       NODE_ENV: development
       PORT: 3000
-      DB_HOST:
-      DB_USER:
-      DB_PASS:
-      DB_PORT:
-      DB_NAME:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}

@@ -12,6 +12,7 @@
   "author": "Diogo Beda <diogo.fbeda@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.16.0",
     "@types/jest": "^23.3.9",
     "@types/knex": "^0.15.1",
     "@types/mock-knex": "^0.3.4",
@@ -24,7 +25,11 @@
     "typescript": "^3.1.6"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "inversify": "^5.0.1",
     "knex": "^0.15.2",
-    "mysql": "^2.16.0"
+    "mysql": "^2.16.0",
+    "reflect-metadata": "^0.1.12"
   }
 }

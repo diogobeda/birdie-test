@@ -1,10 +1,10 @@
-import mockDb from "mock-knex";
-import { getTableColumns } from "./InfoSchema";
-import db from "../../db";
+import mockKnex from "mock-knex";
+import { DBConnector } from "../../connectors/db";
+import { InfoSchemaRepo } from "./InfoSchema";
 
-mockDb.mock(db);
+mockKnex.mock(DBConnector);
 
-const tracker = mockDb.getTracker();
+const tracker = mockKnex.getTracker();
 
 describe("InfoSchema repository", () => {
   beforeEach(() => {
@@ -19,6 +19,7 @@ describe("InfoSchema repository", () => {
     test("gets columns from given table", async (done) => {
       const schema = "public";
       const table = "census";
+      const repo = new InfoSchemaRepo(DBConnector);
 
       const response = ["age", "citizenship"];
       tracker.once("query", (query) => {
@@ -32,7 +33,7 @@ describe("InfoSchema repository", () => {
         done();
       });
 
-      const result = await getTableColumns(table, schema);
+      const result = await repo.getTableColumns(table, schema);
       expect(result).toEqual(response);
     });
   });

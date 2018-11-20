@@ -1,6 +1,9 @@
+import { injectable } from "inversify";
 import knex from "knex";
 
-export default knex({
+export const Key = Symbol.for("DBConnector");
+
+export const DBConnector = knex({
   client: "mysql",
   connection: {
     host: process.env.DB_HOST,
