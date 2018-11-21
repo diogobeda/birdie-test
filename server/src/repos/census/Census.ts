@@ -3,9 +3,17 @@ import { injectable, inject } from "inversify";
 import { Key as DBConnectorKey } from "../../connectors/db";
 
 export interface ICensusRepo {
-  getCountByValue(column: string): Knex.QueryBuilder;
-  getUniqueValueCount(column: string): Knex.QueryBuilder;
+  getCountByValue(column: string): Promise<ValueAggregates>;
+  getUniqueValueCount(column: string): Promise<UniqueValuesCount>;
 }
+
+export type ValueAggregates = Array<{
+  count: string,
+  averageAge: string,
+  [key: string]: string,
+}>;
+
+export type UniqueValuesCount = Array<{ count: number }>;
 
 const AGGREGATE_DATA_LIMIT = 100;
 
@@ -19,8 +27,8 @@ export class CensusRepo implements ICensusRepo {
     this.db = db;
   }
 
-  getCountByValue(column: string): Knex.QueryBuilder {
-    return this.db
+  getCountByValue(column: string): Promise<ValueAggregates> {
+    return <Promise<ValueAggregates>> <unknown> this.db
       .count({ count: column })
       .avg({ averageAge: "age" })
       .select(column)
@@ -30,8 +38,8 @@ export class CensusRepo implements ICensusRepo {
       .limit(AGGREGATE_DATA_LIMIT);
   }
 
-  getUniqueValueCount(column: string): Knex.QueryBuilder {
-    return this.db
+  getUniqueValueCount(column: string): Promise<UniqueValuesCount> {
+    return <Promise<UniqueValuesCount>> <unknown> this.db
       .countDistinct({ count: column })
       .from("census_learn_sql");
   }

@@ -8,15 +8,7 @@ import {
   ICensusRepo,
 } from "../../repos/census";
 
-type CensusColumn = {
-  column_name: string,
-};
 
-type AggregateDataRow = {
-  count: string,
-  averageAge: string,
-  [key: string]: string,
-};
 
 type CensusDataRow = {
   value: string,
@@ -48,16 +40,14 @@ export class CensusDomain implements ICensusDomain {
   }
 
   async getCensusColumns(): Promise<Array<string>> {
-    // @FIXME: Use actual types on repos instead of QueryBuilder to avoid casting on domains
-    const columns = <Array<CensusColumn>> await this.infoSchemaRepo.getTableColumns("census_learn_sql", "birdietest");
+    const columns = await this.infoSchemaRepo.getTableColumns("census_learn_sql", "birdietest");
     return columns
       .map(({ column_name }) => column_name)
       .filter(col => col !== "age");
   }
 
   async getCensusDataByColumn(column: string): Promise<CensusData> {
-    // @FIXME: Use actual types on repos instead of QueryBuilder to avoid casting on domains
-    const countByValue = <Array<AggregateDataRow>> await this.censusRepo.getCountByValue(column);
+    const countByValue = await this.censusRepo.getCountByValue(column);
     const [{ count: totalRows }] = await this.censusRepo.getUniqueValueCount(column);
     const rows = countByValue.map(({ [column]: value, count, averageAge }) => ({
       value,
