@@ -47,7 +47,7 @@ export class CensusDomain implements ICensusDomain {
   }
 
   async getCensusDataByColumn(column: string): Promise<CensusData> {
-    const countByValue = await this.censusRepo.getCountByValue(column);
+    const countByValue = await this.censusRepo.getCountAndAvgAgeByValue(column);
     const [{ count: totalRows }] = await this.censusRepo.getUniqueValueCount(column);
     const rows = countByValue.map(({ [column]: value, count, averageAge }) => ({
       value,

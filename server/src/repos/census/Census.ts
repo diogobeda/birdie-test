@@ -3,7 +3,7 @@ import { injectable, inject } from "inversify";
 import { Key as DBConnectorKey } from "../../connectors/db";
 
 export interface ICensusRepo {
-  getCountByValue(column: string): Promise<ValueAggregates>;
+  getCountAndAvgAgeByValue(column: string): Promise<ValueAggregates>;
   getUniqueValueCount(column: string): Promise<UniqueValuesCount>;
 }
 
@@ -27,7 +27,7 @@ export class CensusRepo implements ICensusRepo {
     this.db = db;
   }
 
-  getCountByValue(column: string): Promise<ValueAggregates> {
+  getCountAndAvgAgeByValue(column: string): Promise<ValueAggregates> {
     return <Promise<ValueAggregates>> <unknown> this.db
       .count({ count: column })
       .avg({ averageAge: "age" })
