@@ -28,14 +28,3 @@ services:
     command: yarn start
     environment:
       NODE_ENV: development
-  storybook:
-    build:
-      context: client
-      dockerfile: dev.Dockerfile
-    volumes:
-      - ./client:/home/client
-    ports:
-      - 9009:9009
-    command: yarn storybook --ci
-    environment:
-      NODE_ENV: development

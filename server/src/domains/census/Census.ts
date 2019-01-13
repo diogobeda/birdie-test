@@ -1,4 +1,5 @@
 import { injectable, inject } from "inversify";
+import boom from "boom";
 import {
   Key as InfoSchemaRepoKey,
   IInfoSchemaRepo,
@@ -7,8 +8,6 @@ import {
   Key as CensusRepoKey,
   ICensusRepo,
 } from "../../repos/census";
-
-
 
 type CensusDataRow = {
   value: string,
@@ -40,10 +39,14 @@ export class CensusDomain implements ICensusDomain {
   }
 
   async getCensusColumns(): Promise<Array<string>> {
-    const columns = await this.infoSchemaRepo.getTableColumns("census_learn_sql", "birdietest");
-    return columns
-      .map(({ column_name }) => column_name)
-      .filter(col => col !== "age");
+    try {
+      const columns = await this.infoSchemaRepo.getTableColumns("census_learn_sql", "birdietest");
+      return columns
+        .map(({ column_name }) => column_name)
+        .filter(col => col !== "age");
+    } catch (e) {
+      throw boom.internal("There was an error getting the columns to filter");
+    }
   }
 
   async getCensusDataByColumn(column: string): Promise<CensusData> {

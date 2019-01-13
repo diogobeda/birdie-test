@@ -1,6 +1,7 @@
-import { Router, Response } from "express";
+import { Router } from "express";
+import Boom from "boom";
 import { ICensusDomain } from "./Census";
-import { Request } from "../../server";
+import { Request, Response } from "../../server";
 import IOCContainer from "../../ioc/container";
 
 export const Key = Symbol.for("CensusDomain");
@@ -14,8 +15,12 @@ export const createRouter = (): Router => {
   const router = Router();
 
   router.get("/columns", async ({ ioc }: Request, res: Response) => {
-    const columns = await censusDomain(ioc).getCensusColumns();
-    res.json({ columns });
+    try {
+      const columns = await censusDomain(ioc).getCensusColumns();
+      res.json({ columns });
+    } catch (e) {
+      res.boomError(e);
+    }
   });
 
   router.get("/column_data", async ({ query, ioc }: Request, res: Response) => {
