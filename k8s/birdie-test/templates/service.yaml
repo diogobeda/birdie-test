@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "birdie-test.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "birdie-test.name" . }}
+    helm.sh/chart: {{ include "birdie-test.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: api
+    - port: 3001
+      targetPort: 3001
+      protocol: TCP
+      name: client
+  selector:
+    app.kubernetes.io/name: {{ include "birdie-test.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

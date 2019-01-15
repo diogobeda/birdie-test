@@ -1,0 +1,70 @@
+kind: pipeline
+name: default
+
+steps:
+- name: test-server
+  image: node:10-alpine
+  commands:
+  - apk add yarn
+  - cd server
+  - yarn
+  - yarn test
+
+- name: build-server
+  image: plugins/docker
+  settings:
+    repo: diogobeda/birdie-test-api
+    tags:
+      - latest
+      - ${DRONE_COMMIT_SHA:0:8}
+      - ${DRONE_TAG}
+    username:
+      from_secret: DOCKER_HUB_USERNAME
+    password:
+      from_secret: DOCKER_HUB_PASSWORD
+    dockerfile: server/prod.Dockerfile
+  environment:
+    REACT_APP_API_URL: https://api.birdie-test.glitchfox.cc
+  when:
+    event:
+      - tag
+
+- name: build-client
+  image: plugins/docker
+  settings:
+    repo: diogobeda/birdie-test-client
+    tags:
+      - latest
+      - ${DRONE_COMMIT_SHA:0:8}
+      - ${DRONE_TAG}
+    username:
+      from_secret: DOCKER_HUB_USERNAME
+    password:
+      from_secret: DOCKER_HUB_PASSWORD
+    dockerfile: client/prod.Dockerfile
+  when:
+    event:
+      - tag
+
+- name: download_deploy_config
+  image: alpine
+  commands:
+    - apk update
+    - apk add --no-cache bash curl
+    - /bin/bash k8s/get-k8s-config.sh
+  environment:
+    DIGITALOCEAN_API_TOKEN:
+      from_secret: DIGITALOCEAN_API_TOKEN
+    DIGITALOCEAN_KUBE_CLUSTER_ID:
+      from_secret: DIGITALOCEAN_KUBE_CLUSTER_ID
+  when:
+    event:
+      - tag
+
+- name: deploy
+  image: lachlanevenson/k8s-helm
+  commands:
+    - helm --kubeconfig="do-kubeconfig.yaml" upgrade --set serverContainer.tag=${DRONE_COMMIT_SHA:0:8} --set clientContainer.tag=${DRONE_COMMIT_SHA:0:8} birdie-test ./k8s/birdie-test
+  when:
+    event:
+      - tag

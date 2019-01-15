@@ -3,6 +3,7 @@ import createApp from "./server/app";
 
 const app = createApp();
 
-app.listen(process.env.PORT, () => {
-  console.log("Server listening on port 3000");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
