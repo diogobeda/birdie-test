@@ -23,8 +23,6 @@ steps:
     password:
       from_secret: DOCKER_HUB_PASSWORD
     dockerfile: server/prod.Dockerfile
-  environment:
-    REACT_APP_API_URL: https://api.birdie-test.glitchfox.cc
   when:
     event:
       - tag
@@ -42,6 +40,8 @@ steps:
     password:
       from_secret: DOCKER_HUB_PASSWORD
     dockerfile: client/prod.Dockerfile
+    build_args:
+      - REACT_APP_API_URL=https://api.birdie-test.glitchfox.cc
   when:
     event:
       - tag

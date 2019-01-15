@@ -2,6 +2,9 @@ FROM node:10-alpine as build
 
 RUN apk add yarn
 
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+
 COPY ./client /var/app
 WORKDIR /var/app
 RUN yarn install --frozen-lockfile
